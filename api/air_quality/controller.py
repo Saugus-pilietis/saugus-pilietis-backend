@@ -23,7 +23,20 @@ def stations():
         stations[idx] = {}
         for measurement, tags in res.keys():
             for point in res.get_points(measurement=measurement, tags=tags):
-                print(point)
                 stations[idx][point["key"]] = point["value"] 
-    print(ids)
     return jsonify(stations)
+
+@airQuality.route("/measurements", methods=["GET"])
+def measurements():
+    db = app.config["db"].connection
+    db.switch_database("sauguspilietis")
+
+    res = db.query("SELECT LAST(*) FROM airQuality GROUP BY id")
+   
+    measurement_data = {}
+
+    for measurement, tags in res.keys():
+        for point in res.get_points(measurement=measurement, tags=tags):
+            measurement_data[tags['id']] = point
+
+    return jsonify(measurement_data)
