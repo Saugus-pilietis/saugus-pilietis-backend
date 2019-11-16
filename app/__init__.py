@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from flask_influxdb import InfluxDB
+from flask_cors import CORS
 
 import api.keys.controller
 
@@ -26,7 +27,9 @@ def initialize_config_from_env(app):
 
 def create_app():
     app = Flask(__name__)
+
     db.init_app(app)
+    CORS(app)
 
     initialize_config_from_env(app)
 
