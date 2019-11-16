@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from flask_influxdb import InfluxDB
+from flask_cors import CORS
 
 import api.keys.controller
 
@@ -14,7 +15,9 @@ db = InfluxDB()
 
 def create_app():
     app = Flask(__name__)
+
     db.init_app(app)
+    CORS(app)
 
     app.config['GOOGLE_API_KEY'] = GOOGLE_API_KEY
 
