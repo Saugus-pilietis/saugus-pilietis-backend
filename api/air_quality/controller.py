@@ -46,7 +46,7 @@ def historical_measurements(station_id):
     db = app.config["db"].connection
     db.switch_database("sauguspilietis")
 
-    res = db.query("SELECT * FROM airQuality WHERE id='%s' and time > now() - 6h GROUP BY id ORDER BY time desc " % station_id)
+    res = db.query("SELECT * FROM airQuality WHERE id='%s' and time > now() - 6h GROUP BY id ORDER BY time asc" % station_id)
 
     measurement_data = {}
 
