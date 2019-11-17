@@ -40,3 +40,19 @@ def measurements():
             measurement_data[tags['id']] = point
 
     return jsonify(measurement_data)
+
+@airQuality.route("/historical_measurements/<station_id>", methods=["GET"])
+def historical_measurements(station_id):
+    db = app.config["db"].connection
+    db.switch_database("sauguspilietis")
+
+    res = db.query("SELECT * FROM airQuality WHERE id='%s' and time > now() - 6h GROUP BY id ORDER BY time desc " % station_id)
+
+    measurement_data = {}
+
+    for measurement, tags in res.keys():
+        measurement_data[tags['id']] = []
+        for point in res.get_points(measurement=measurement, tags=tags):
+            measurement_data[tags['id']].append(point)
+
+    return jsonify(measurement_data)
